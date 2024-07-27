@@ -1,7 +1,7 @@
 const express=require("express")
 const router=express.Router()
 const zod=require("zod")
-const { User}=require("../db")
+const { User, Account}=require("../db")
 const {JWT_SECRET}=require("../confi")
 const {authMiddleware}=require("../middleware")
 const signupBody=zod.object({
@@ -34,7 +34,12 @@ router.post("signup",async (req,res)=>{
         lastname:req.body.lastname,
         password:req.body.password
     })
+    const userId=user._id;
 
+    await Account.create({
+        userId,
+        balance:1+Math.random()*10000
+    })
     const token=jwt.sign({
         userId:dbuser._id
     },JWT_SECRET)
