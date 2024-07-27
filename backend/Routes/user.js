@@ -1,9 +1,9 @@
 const express=require("express")
 const router=express.Router()
 const zod=require("zod")
-const { user}=require("../db")
+const { User}=require("../db")
 const {JWT_SECRET}=require("../confi")
-
+const {authMiddleware}=require("../middleware")
 const signupBody=zod.object({
     username:zod.string().email(),
     firstname:zod.string(),
@@ -75,6 +75,51 @@ router.post("/signin", async(req,res)=>{
     }
     res.status(411).json({
         message:"error while logging in"
+    })
+})
+
+const updateBody= zod.object({
+    password:zod.string(),
+    firstname:zod.string(),
+    lastname:zod.string()
+})
+
+router.put("/", authMiddleware , async(req,res)=>{
+    const {success} =updateBody.safeParse(req.body);
+    if(!success){
+        res.status(411).json({
+            message:"incorrect inputs/error while updating"
+        })
+    }
+    await user.updateOne({
+        id:req.userId
+    })
+    res.json({
+        message:"details updated successfully"
+    })
+})  
+
+router.get("/bulk", async(req,res)=>{
+    const filter=req.query.filter || ""
+    const users=await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
     })
 
 })
