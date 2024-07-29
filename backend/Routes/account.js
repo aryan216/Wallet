@@ -1,18 +1,19 @@
 const express=require("express")
-const router=express.router()
+const router=express.Router()
 const authmiddleware=require("../middleware")
-const { Account } = require("../db")
+const Account = require("../db")
 
 
-router.get("/balance",authmiddleware, async(req,res)=>{
-    const account= await Account.findOne({
+router.get("/balance", authmiddleware, async (req, res) => {
+    const account = await Account.findOne({
         userId: req.userId
-    })
+    });
+
     res.json({
-        balance:account.balance
+        balance: account.balance
     })
-})
-router.post("/transfer", authMiddleware, async (req, res) => {
+});
+router.post("/transfer", authmiddleware, async (req, res) => {
     const { amount, to } = req.body;
 
     const account = await Account.findOne({
@@ -55,6 +56,6 @@ router.post("/transfer", authMiddleware, async (req, res) => {
         message: "Transfer successful"
     })
 });
-router.post()
 
-module.exports=router
+
+module.exports=router;

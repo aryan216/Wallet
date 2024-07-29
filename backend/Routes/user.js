@@ -1,8 +1,9 @@
 const express=require("express")
 const router=express.Router()
 const zod=require("zod")
+const jwt=require("jsonwebtoken")
 const { User, Account}=require("../db")
-const {JWT_SECRET}=require("../confi")
+const {JWT_SECRET}=require("../config")
 const {authMiddleware}=require("../middleware")
 const signupBody=zod.object({
     username:zod.string().email(),
@@ -11,7 +12,7 @@ const signupBody=zod.object({
     password:zod.string()
 })
 
-router.post("signup",async (req,res)=>{
+router.post("/signup",async (req,res)=>{
     const {success}=signupBody.safeParse(req.body);
     if(!success){
         return res.status(411).json({
@@ -19,7 +20,7 @@ router.post("signup",async (req,res)=>{
         })
     }
 
-    const existingUser= await user.findOne({
+    const existingUser= await User.findOne({
         usernamme:req.body.username
     })
     if(existingUser){
@@ -28,13 +29,13 @@ router.post("signup",async (req,res)=>{
         })
     }
 
-    const dbuser=await user.create({
+    const dbuser=await User.create({
         username:req.body.username,
         firstname:req.body.firstname,
         lastname:req.body.lastname,
         password:req.body.password
     })
-    const userId=user._id;
+    const userId=User._id;
 
     await Account.create({
         userId,
@@ -63,14 +64,14 @@ router.post("/signin", async(req,res)=>{
         })
     }
 
-    const user=await user.findOne({
+    const user=await User.findOne({
         username:req.body.username,
         password:req.body.password
     });
 
     if(user){
         const token=jwt.sign({
-            userId:user._id
+            userId:User._id
         },JWT_SECRET)
 
         res.json({
@@ -96,7 +97,7 @@ router.put("/", authMiddleware , async(req,res)=>{
             message:"incorrect inputs/error while updating"
         })
     }
-    await user.updateOne({
+    await User.updateOne({
         id:req.userId
     })
     res.json({
