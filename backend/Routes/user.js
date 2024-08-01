@@ -12,7 +12,7 @@ const signupBody=zod.object({
     password:zod.string()
 })
 
-router.post("/signup",async (req,res)=>{
+router.post("/signup", async (req,res)=>{
     const {success}=signupBody.safeParse(req.body);
     if(!success){
         return res.status(411).json({
@@ -20,7 +20,7 @@ router.post("/signup",async (req,res)=>{
         })
     }
 
-    const existingUser= await User.findOne({
+    const existingUser = await User.findOne({
         usernamme:req.body.username
     })
     if(existingUser){
@@ -35,14 +35,14 @@ router.post("/signup",async (req,res)=>{
         lastname:req.body.lastname,
         password:req.body.password
     })
-    const userId=User._id;
+    
 
     await Account.create({
-        userId,
+        userId: dbuser._id,
         balance:1+Math.random()*10000
     })
     const token=jwt.sign({
-        userId:dbuser._id
+        userId:dbuser._id,
     },JWT_SECRET)
 
     res.json({
@@ -71,10 +71,11 @@ router.post("/signin", async(req,res)=>{
 
     if(user){
         const token=jwt.sign({
-            userId:User._id
+            userId:user._id
         },JWT_SECRET)
 
         res.json({
+            message:"user sign in successfully",
             token:token
         })
         return
