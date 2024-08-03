@@ -1,7 +1,7 @@
 const express=require("express")
 const router=express.Router()
-const {authMiddleware}=require("../middleware")
-const {Account }= require("../db")
+const authMiddleware=require("../middleware")
+const Account = require("../db")
 
 
 router.get("/balance", authMiddleware, async (req, res) => {
@@ -13,7 +13,6 @@ router.get("/balance", authMiddleware, async (req, res) => {
         balance: account.balance
     })
 });
-
 router.post("/transfer", authMiddleware, async (req, res) => {
     const { amount, to } = req.body;
 
