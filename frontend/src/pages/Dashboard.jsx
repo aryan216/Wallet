@@ -1,4 +1,4 @@
-export function Signin(){
+export function Dashboard(){
     return(
         <div>
             
