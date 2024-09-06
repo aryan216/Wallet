@@ -10,17 +10,19 @@ export const Users = () => {
     const [value,setValue] = useState("");
 
     useEffect(() => {
-        axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + value)
+        axios.get("http://localhost:3000/api/v1/user/bulk?filter="+value)
             .then(response => {
                 console.log("API response:", response.data);
-                setUsers(response.data.user)
+                setUsers(response.data.users)
             })
     }, [value])
+    console.log(value)
 
     return <>
         <div className="font-bold mt-6 text-lg">
             Users
         </div>
+      
         <div className="my-2">
             <input onChange={(e) => {
                 setValue(e.target.value)
@@ -56,7 +58,9 @@ function User({user}) {
         </div>
 
         <div className="flex flex-col justify-center h-ful">
-            <button>Send money</button>
+        <button onClick={(e) => {
+                navigate("/transfer?id=" + user._id + "&name=" + user.firstName);
+            }} type="button" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Send Money</button>
         </div>
     </div>
 }
