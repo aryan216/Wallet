@@ -6,7 +6,7 @@ export function Dashboard(){
         <div>
             <Appbar/>
             <div className="m-8">
-                <Balance value={10000}/>
+                <Balance value={10000000}/>
                 <Users/>
             </div>
         </div>
