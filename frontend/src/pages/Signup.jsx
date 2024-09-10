@@ -4,7 +4,9 @@ import { Inputbox } from "../Components/Inputbox"
 import { Note } from "../Components/Note"
 import { useState } from "react"
 import axios from "axios";
+import { useNavigate } from "react-router-dom"
 export function Signup(){
+    const Navigate=useNavigate();
     const [firstName,setFirstName]=useState("");
     const [lastName, setLastName]=useState("");
     const [username, setUsername]=useState("");
@@ -28,7 +30,9 @@ export function Signup(){
                             lastName
                         })
                         localStorage.setItem("token",response.data.token)
-                    }} className="focus:outline-none text-white w-full bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Sign Up</button>                 
+                        Navigate("/dashboard")
+                    }
+                    } className="focus:outline-none text-white w-full bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Sign Up</button>                 
                     </div>
                     <Note label={"Already have an account?"} buttontext={"sign in"} to={"/Signin"} />
                </div>
